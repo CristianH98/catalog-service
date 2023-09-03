@@ -1,8 +1,14 @@
 server:
-  port: 9001
-  tomcat:
-    connection-timeout: 2s
-    keep-alive-timeout: 15s
-    threads:
-      max: 50
-      min-spare: 5
+    port: 9001
+    tomcat:
+        connection-timeout: 2s
+        keep-alive-timeout: 15s
+        threads:
+            max: 50
+            min-spare: 5
+
+springdoc:
+    api-docs:
+        path: /api-docs
+
+#http://localhost:9001/swagger-ui/index.html
