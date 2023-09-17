@@ -12,3 +12,6 @@ springdoc:
         path: /api-docs
 
 #http://localhost:9001/swagger-ui/index.html
+
+polar:
+    greeting: Welcome to the local book catalog!
