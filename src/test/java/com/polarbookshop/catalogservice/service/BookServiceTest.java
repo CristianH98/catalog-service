@@ -27,6 +27,7 @@ class BookServiceTest {
     private BookService bookService;
 
     private Book book;
+
     private String isbn;
 
     @BeforeEach
@@ -51,7 +52,6 @@ class BookServiceTest {
 
     @Test
     void viewBookDetails() {
-        String isbn = book.isbn();
         when(bookRepository.findByIsbn(isbn)).thenReturn(Optional.of(book));
         assertThat(bookService.viewBookDetails(isbn)).isEqualTo(book);
     }
