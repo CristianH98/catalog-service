@@ -9,7 +9,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -32,7 +31,7 @@ class BookServiceTest {
 
     @BeforeEach
     void setUp() {
-        book = new Book("1234567890", "Title", "Author", new BigDecimal("9.90"));
+        book = Book.of("1234567890", "Title", "Author",9.90);
         isbn = book.isbn();
     }
 
