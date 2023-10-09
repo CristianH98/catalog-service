@@ -25,6 +25,7 @@ bootRun {
 
 ext {
     set('springCloudVersion', "2022.0.4")
+    set('testcontainersVersion', "1.17.3")
 }
 
 dependencies {
@@ -34,12 +35,12 @@ dependencies {
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.boot:spring-boot-starter-webflux'
+    testImplementation "org.testcontainers:postgresql:1.19.1"
     implementation 'org.springframework.cloud:spring-cloud-starter-config'
     implementation 'org.springframework.retry:spring-retry'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     runtimeOnly 'org.postgresql:postgresql'
-
 }
 
 dependencyManagement {

@@ -1,7 +1,6 @@
-package com.polarbookshop.catalogservice;
+package com.polarbookshop.catalogservice.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.polarbookshop.catalogservice.api.BookController;
 import com.polarbookshop.catalogservice.domain.Book;
 import com.polarbookshop.catalogservice.exceptions.NoSuchBookException;
 import com.polarbookshop.catalogservice.service.BookService;
