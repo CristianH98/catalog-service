@@ -1,7 +1,6 @@
-package com.polarbookshop.catalogservice;
+package com.polarbookshop.catalogservice.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.polarbookshop.catalogservice.api.BookController;
 import com.polarbookshop.catalogservice.domain.Book;
 import com.polarbookshop.catalogservice.exceptions.NoSuchBookException;
 import com.polarbookshop.catalogservice.service.BookService;
@@ -12,7 +11,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +20,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BookController.class)
-public class BookControllerTest {
+class BookControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -50,7 +48,7 @@ public class BookControllerTest {
 
     @Test
     void whenAddBookReturn201() throws Exception {
-        Book  book = new Book("1234567890123", "Vodka", "Carlos", new BigDecimal(5));
+        Book  book = Book.of("1234567890123", "Vodka", "Carlos", 5.10);
         when(bookService.addBook(book)).thenReturn(book);
 
         mockMvc.perform(post("/books")
