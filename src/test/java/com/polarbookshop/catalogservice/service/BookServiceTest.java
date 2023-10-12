@@ -31,7 +31,7 @@ class BookServiceTest {
 
     @BeforeEach
     void setUp() {
-        book = Book.of("1234567890", "Title", "Author",9.90);
+        book = Book.of("1234567890", "Title", "Author",9.90, "O'Reilly");
         isbn = book.isbn();
     }
 

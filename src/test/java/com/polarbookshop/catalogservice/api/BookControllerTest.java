@@ -48,7 +48,7 @@ class BookControllerTest {
 
     @Test
     void whenAddBookReturn201() throws Exception {
-        Book  book = Book.of("1234567890123", "Vodka", "Carlos", 5.10);
+        Book  book = Book.of("1234567890123", "Vodka", "Carlos", 5.10, "O'Reilly");
         when(bookService.addBook(book)).thenReturn(book);
 
         mockMvc.perform(post("/books")
