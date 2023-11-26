@@ -13,8 +13,10 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.hamcrest.Matchers.any;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class BookServiceTest {
@@ -59,5 +61,25 @@ class BookServiceTest {
     void removeBook() {
         bookService.removeBook(isbn);
         verify(bookRepository).deleteByIsbn(isbn);
+    }
+
+    @Test
+    void testEditBookNewBook() {
+        // Mock data
+        String isbn = "1234567890123";
+        Book newBook = Book.of(isbn, "New Title", "New Author", 29.99, "New Publisher");
+
+        // Mock the behavior of the bookRepository.findByIsbn and bookRepository.save methods
+        when(bookRepository.findByIsbn(isbn)).thenReturn(Optional.empty());
+        when(bookRepository.save(newBook)).thenReturn(newBook);
+
+        // Call the service method
+        Book result = bookService.editBook(isbn, newBook);
+
+        // Assertions
+        assertSame(newBook, result);
+
+        // Verify that bookRepository.findByIsbn() and bookRepository.save() were called once each
+        verify(bookRepository, times(1)).findByIsbn(isbn);
     }
 }
