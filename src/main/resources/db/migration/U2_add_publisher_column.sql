@@ -1,0 +1,2 @@
+ALTER TABLE book
+DROP COLUMN IF EXISTS publisher;
