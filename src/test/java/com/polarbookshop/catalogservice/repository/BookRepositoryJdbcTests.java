@@ -8,11 +8,14 @@ import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jdbc.core.JdbcAggregateTemplate;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJdbcTest
 @Import(DataConfig.class)
@@ -36,4 +39,32 @@ class BookRepositoryJdbcTests {
         assertThat(actualBook).isPresent();
         assertThat(book.isbn()).isEqualTo(actualBook.get().isbn());
     }
+
+    @Test
+    void testExistsByIsbn() {
+        // Given
+        Book book = Book.of("1234567890123", "Title", "Author", 9.99, "Publisher");
+        bookRepository.save(book);
+
+        boolean exists = bookRepository.existsByIsbn("1234567890123");
+
+        // Then
+        assertTrue(exists);
+    }
+
+    @Test
+    @DirtiesContext
+    void testDeleteByIsbn() {
+        // Given
+        Book book = Book.of("1234567890123", "Title", "Author", 9.99, "Publisher");
+        bookRepository.save(book);
+
+        // When
+        bookRepository.deleteByIsbn("1234567890123");
+
+        // Then
+        Optional<Book> deletedBook = bookRepository.findByIsbn("1234567890123");
+        assertFalse(deletedBook.isPresent());
+    }
+
 }

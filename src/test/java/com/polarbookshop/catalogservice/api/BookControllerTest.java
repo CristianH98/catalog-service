@@ -12,12 +12,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 
 @WebMvcTest(BookController.class)
 class BookControllerTest {
@@ -56,6 +58,95 @@ class BookControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .content(toJson(book)))
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    void whenGetBooksReturnContent() throws Exception {
+        List<Book> mockBookList = Arrays.asList(
+                 Book.of("1234567890123", "Vodka", "Carlos", 5.10, "O'Reilly"),
+                Book.of("4567890123459", "Whiskey", "John", 8.99, "Penguin Books")
+        );
+
+        when(bookService.viewBookList()).thenReturn(mockBookList);
+
+        mockMvc.perform(get("/books"))
+                .andExpect(status().isOk())  // Expect HTTP 200 OK status
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].isbn").value("1234567890123"))
+                .andExpect(jsonPath("$[0].title").value("Vodka"))
+                .andExpect(jsonPath("$[0].author").value("Carlos"))
+                .andExpect(jsonPath("$[0].price").value(5.10))
+                .andExpect(jsonPath("$[0].publisher").value("O'Reilly"))
+                .andExpect(jsonPath("$[1].isbn").value("4567890123459"))
+                .andExpect(jsonPath("$[1].title").value("Whiskey"))
+                .andExpect(jsonPath("$[1].author").value("John"))
+                .andExpect(jsonPath("$[1].price").value(8.99))
+                .andExpect(jsonPath("$[1].publisher").value("Penguin Books"));
+
+        verify(bookService, times(1)).viewBookList();
+
+    }
+
+    @Test
+    void whenGetByIsbnEndpointReturnSingleBook() throws Exception {
+        // Mock data
+        String isbn = "1234567890123";
+        Book mockBook = Book.of(isbn, "Vodka", "Carlos", 5.10, "O'Reilly");
+
+        // Mock the behavior of the bookService.viewBookDetails(isbn) method
+        when(bookService.viewBookDetails(isbn)).thenReturn(mockBook);
+
+        // Perform the GET request to the "/books/{isbn}" endpoint
+        mockMvc.perform(get("/books/{isbn}", isbn))
+                .andExpect(status().isOk())  // Expect HTTP 200 OK status
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.isbn").value(isbn))
+                .andExpect(jsonPath("$.title").value("Vodka"))
+                .andExpect(jsonPath("$.author").value("Carlos"))
+                .andExpect(jsonPath("$.price").value(5.10))
+                .andExpect(jsonPath("$.publisher").value("O'Reilly"));
+
+        // Verify that the bookService.viewBookDetails(isbn) method was called once with the specified ISBN
+        verify(bookService, times(1)).viewBookDetails(isbn);
+    }
+
+    @Test
+    void whenDeleteByIsbnEndpointReturnNoContent() throws Exception {
+        // Mock data
+        String isbn = "1234567890123";
+
+        // Perform the DELETE request to the "/books/{isbn}" endpoint
+        mockMvc.perform(delete("/books/{isbn}", isbn))
+                .andExpect(status().isNoContent());  // Expect HTTP 204 No Content status
+
+        // Verify that the bookService.removeBook(isbn) method was called once with the specified ISBN
+        verify(bookService, times(1)).removeBook(isbn);
+    }
+
+    @Test
+    void whenPutByIsbnEndpointReturnUpdatedBook() throws Exception {
+        // Mock data
+        String isbn = "1234567890123";
+        Book updatedBook = Book.of(isbn, "Updated Title", "Updated Author", 9.99, "Updated Publisher");
+
+        // Mock the behavior of the bookService.editBook(isbn, book) method
+        when(bookService.editBook(eq(isbn), any(Book.class))).thenReturn(updatedBook);
+
+        // Perform the PUT request to the "/books/{isbn}" endpoint
+        mockMvc.perform(put("/books/{isbn}", isbn)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(toJson(updatedBook)))
+                .andExpect(status().isOk())  // Expect HTTP 200 OK status
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.isbn").value(isbn))
+                .andExpect(jsonPath("$.title").value("Updated Title"))
+                .andExpect(jsonPath("$.author").value("Updated Author"))
+                .andExpect(jsonPath("$.price").value(9.99))
+                .andExpect(jsonPath("$.publisher").value("Updated Publisher"));
+
+        // Verify that the bookService.editBook(isbn, book) method was called once with the specified ISBN and book
+        verify(bookService, times(1)).editBook(eq(isbn), any(Book.class));
     }
 
     private static String toJson(Book book) {
