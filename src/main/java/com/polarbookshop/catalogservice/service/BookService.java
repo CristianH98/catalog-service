@@ -2,8 +2,8 @@ package com.polarbookshop.catalogservice.service;
 
 import com.polarbookshop.catalogservice.domain.Book;
 import com.polarbookshop.catalogservice.exceptions.BookAlreadyExistsException;
-import com.polarbookshop.catalogservice.repository.BookRepository;
 import com.polarbookshop.catalogservice.exceptions.NoSuchBookException;
+import com.polarbookshop.catalogservice.repository.BookRepository;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -34,7 +34,7 @@ public class BookService {
     public void removeBook(String isbn){
         bookRepository.deleteByIsbn(isbn);
     }
-    public Book editBook(String isbn, Book book){
+    public Book editBook(String isbn, Book book) {
         return bookRepository.findByIsbn(isbn)
                 .map(existingBook -> {
                     var updatedBook = new Book(
