@@ -48,21 +48,18 @@ class BookRepositoryJdbcTests {
 
         boolean exists = bookRepository.existsByIsbn("1234567890123");
 
-        // Then
         assertTrue(exists);
     }
 
     @Test
     @DirtiesContext
     void testDeleteByIsbn() {
-        // Given
+
         Book book = Book.of("1234567890123", "Title", "Author", 9.99, "Publisher");
         bookRepository.save(book);
 
-        // When
         bookRepository.deleteByIsbn("1234567890123");
 
-        // Then
         Optional<Book> deletedBook = bookRepository.findByIsbn("1234567890123");
         assertFalse(deletedBook.isPresent());
     }
