@@ -29,7 +29,7 @@ public class BookDataLoader {
                 "Iorek Polarson", 12.90, "Warner Bros");
 
         var book3 = Book.of("1234567893", "Polar Bear",
-                "Iorek Polarson", 12.90, "O'Reilly");
+                "Catalin Dumitru", 12.90, "O'Reilly");
 
         bookRepository.saveAll(List.of(book1, book2, book3));
 
