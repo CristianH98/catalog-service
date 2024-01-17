@@ -16,7 +16,7 @@ import java.util.Map;
 public class BookControllerAdvice {
     @ExceptionHandler(NoSuchBookException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    String bookNotFound(NoSuchBookException e){
+    String bookNotFound(NoSuchBookException e) {
         return e.getMessage();
     }
 
@@ -28,13 +28,15 @@ public class BookControllerAdvice {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    Map<String, String> handleValidationException(MethodArgumentNotValidException e){
+    Map<String, String> handleValidationException(MethodArgumentNotValidException e) {
+
         var errors = new HashMap<String, String>();
         e.getBindingResult().getAllErrors().forEach(error -> {
             String field = ((FieldError) error).getField();
             String message = error.getDefaultMessage();
             errors.put(field, message);
             });
-            return errors;
+
+        return errors;
     }
 }

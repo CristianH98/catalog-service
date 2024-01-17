@@ -31,12 +31,14 @@ class BookServiceTest {
 
     @BeforeEach
     void setUp() {
+
         book = Book.of("1234567890", "Title", "Author",9.90, "O'Reilly");
         isbn = book.isbn();
     }
 
     @Test
-    void viewBookList() {
+    void shouldReturnBookList() {
+
         var books = new ArrayList<Book>();
         when(bookRepository.findAll()).thenReturn(books);
         var savedBooks = bookService.viewBookList();
@@ -44,26 +46,29 @@ class BookServiceTest {
     }
 
     @Test
-    void addBook() {
+    void shouldAddBook() {
+
         when(bookRepository.save(book)).thenReturn(book);
         assertThat(bookService.addBook(book)).isNotNull();
     }
 
     @Test
-    void viewBookDetails() {
+    void shouldReturnBookDetails() {
+
         when(bookRepository.findByIsbn(isbn)).thenReturn(Optional.of(book));
         assertThat(bookService.viewBookDetails(isbn)).isEqualTo(book);
     }
 
     @Test
-    void removeBook() {
+    void shouldRemoveBook() {
+
         bookService.removeBook(isbn);
         verify(bookRepository).deleteByIsbn(isbn);
     }
 
     @Test
-    void testEditBookNewBook() {
-        // Mock data
+    void shouldEditBook() {
+
         String isbn = "1234567890123";
         Book newBook = Book.of(isbn, "New Title", "New Author", 29.99, "New Publisher");
 

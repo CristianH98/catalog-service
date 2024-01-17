@@ -30,7 +30,7 @@ class BookRepositoryJdbcTests {
     private JdbcAggregateTemplate jdbcAggregateTemplate;
 
     @Test
-    void findBookByIsbn() {
+    void shouldFindBookByIsbn() {
         var bookIsbn = "1234561237";
         var book = Book.of(bookIsbn, "Title", "Author", 12.90, "O'Reilly");
         jdbcAggregateTemplate.insert(book);
@@ -41,8 +41,7 @@ class BookRepositoryJdbcTests {
     }
 
     @Test
-    void testExistsByIsbn() {
-        // Given
+    void shouldExistsByIsbn() {
         Book book = Book.of("1234567890123", "Title", "Author", 9.99, "Publisher");
         bookRepository.save(book);
 
@@ -53,8 +52,7 @@ class BookRepositoryJdbcTests {
 
     @Test
     @DirtiesContext
-    void testDeleteByIsbn() {
-
+    void shouldTestDeleteByIsbn() {
         Book book = Book.of("1234567890123", "Title", "Author", 9.99, "Publisher");
         bookRepository.save(book);
 

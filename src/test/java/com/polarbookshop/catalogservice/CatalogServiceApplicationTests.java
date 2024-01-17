@@ -17,6 +17,7 @@ class CatalogServiceApplicationTests {
     WebTestClient webTestClient;
     @Test
     void whenPostThenBookCreated() {
+
         var expectedBook = Book.of("1231231231", "Title", "Author", 9.90, "O'Reilly");
 
         webTestClient
