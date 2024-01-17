@@ -16,12 +16,14 @@ class BookValidationTests {
     private static Validator validator;
     @BeforeAll
     static void setUp() {
+
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
     }
 
     @Test
     void whenAllFieldsCorrectThenValidationSucceeds() {
+
         var book = Book.of("1234567890", "Title", "Author", 9.90, "O'Reilly");
         Set<ConstraintViolation<Book>> violations = validator.validate(book);
         assertThat(violations).isEmpty();
@@ -29,6 +31,7 @@ class BookValidationTests {
 
     @Test
     void whenIsbnDefinedButIncorrectThenValidationFails() {
+
         var book = Book.of("a234567890", "Title", "Author", 9.90, "O'Reilly");
         Set<ConstraintViolation<Book>> violations = validator.validate(book);
         assertThat(violations).hasSize(1);

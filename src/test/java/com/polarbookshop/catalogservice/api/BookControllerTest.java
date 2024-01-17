@@ -31,6 +31,7 @@ class BookControllerTest {
 
     @Test
     void whenBookNotExistingReturn404() throws Exception {
+
         String isbn = "1234";
         when(bookService.viewBookDetails(isbn)).thenThrow(NoSuchBookException.class);
 
@@ -40,6 +41,7 @@ class BookControllerTest {
 
     @Test
     void whenGetBooksReturn200() throws Exception {
+
         List<Book> bookList = new ArrayList<>();
         when(bookService.viewBookList()).thenReturn(bookList);
 
@@ -49,6 +51,7 @@ class BookControllerTest {
 
     @Test
     void whenAddBookReturn201() throws Exception {
+
         Book  book = Book.of("1234567890123", "Vodka", "Carlos", 5.10, "O'Reilly");
         when(bookService.addBook(book)).thenReturn(book);
 
@@ -61,6 +64,7 @@ class BookControllerTest {
 
     @Test
     void whenGetBooksReturnContent() throws Exception {
+
         List<Book> mockBookList = Arrays.asList(
                  Book.of("1234567890123", "Vodka", "Carlos", 5.10, "O'Reilly"),
                 Book.of("4567890123459", "Whiskey", "John", 8.99, "Penguin Books")
@@ -140,6 +144,7 @@ class BookControllerTest {
     }
 
     private static String toJson(Book book) {
+
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {
