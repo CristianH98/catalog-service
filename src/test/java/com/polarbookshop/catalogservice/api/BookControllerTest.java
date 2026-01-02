@@ -2,6 +2,7 @@ package com.polarbookshop.catalogservice.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.polarbookshop.catalogservice.domain.Book;
+import com.polarbookshop.catalogservice.exceptions.BookAlreadyExistsException;
 import com.polarbookshop.catalogservice.exceptions.NoSuchBookException;
 import com.polarbookshop.catalogservice.service.BookService;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -33,10 +35,12 @@ class BookControllerTest {
     void whenBookNotExistingReturn404() throws Exception {
 
         String isbn = "1234";
-        when(bookService.viewBookDetails(isbn)).thenThrow(NoSuchBookException.class);
+        when(bookService.viewBookDetails(isbn)).thenThrow(new NoSuchBookException(isbn));
 
-        mockMvc.perform(get("/books" + isbn))
-                .andExpect(status().isNotFound());
+        mockMvc.perform(get("/books/{isbn}", isbn))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string(containsString(isbn)));
+        verify(bookService, times(1)).viewBookDetails(isbn);
     }
 
     @Test
@@ -58,8 +62,39 @@ class BookControllerTest {
         mockMvc.perform(post("/books")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
-                        .content(toJson(book)))
+                .content(toJson(book)))
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    void whenAddBookAlreadyExistsReturn422() throws Exception {
+
+        Book book = Book.of("1234567890123", "Vodka", "Carlos", 5.10, "O'Reilly");
+        when(bookService.addBook(book)).thenThrow(new BookAlreadyExistsException(book.isbn()));
+
+        mockMvc.perform(post("/books")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(toJson(book)))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().string(containsString(book.isbn())));
+    }
+
+    @Test
+    void whenAddBookWithInvalidPayloadReturn400() throws Exception {
+
+        Book invalidBook = Book.of("123", "", "", 5.10, "O'Reilly");
+
+        mockMvc.perform(post("/books")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(toJson(invalidBook)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.isbn").value("The ISBN format must be valid."))
+                .andExpect(jsonPath("$.title").value("The book title must be defined."))
+                .andExpect(jsonPath("$.author").value("The book author must be defined."));
+
+        verify(bookService, never()).addBook(any(Book.class));
     }
 
     @Test

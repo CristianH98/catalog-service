@@ -62,4 +62,15 @@ class BookRepositoryJdbcTests {
         assertFalse(deletedBook.isPresent());
     }
 
+    @Test
+    void shouldSetAuditFieldsOnSave() {
+        Book book = Book.of("1234567890124", "Audit Title", "Audit Author", 10.99, "Publisher");
+        bookRepository.save(book);
+
+        Optional<Book> savedBook = bookRepository.findByIsbn("1234567890124");
+        assertThat(savedBook).isPresent();
+        assertThat(savedBook.get().createdDate()).isNotNull();
+        assertThat(savedBook.get().lastModifiedDate()).isNotNull();
+    }
+
 }
